@@ -1,4 +1,3 @@
-// src/Pages/Booking.tsx
 import * as React from 'react';
 import { Box, Container, Stack } from '@mui/material';
 import BookingHeader from '../Components/BookingComp/BookingHeader';

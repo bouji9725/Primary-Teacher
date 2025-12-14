@@ -10,7 +10,8 @@ import {
 } from '@mui/material';
 import { gradients } from '../theme.ts';
 import ParentProblemsSection from '../Components/ParentProblemSection.tsx';
-import Services from './CoreServicesSection.tsx';
+import Services from '../Components/CoreServicesSection.tsx';
+
 
 const HeroSection: React.FC = () => {
   return (
@@ -153,8 +154,7 @@ const HeroSection: React.FC = () => {
 
         {/* Services Section */}
         <Services />
-
-
+          
 
       </Container>
     </Box>

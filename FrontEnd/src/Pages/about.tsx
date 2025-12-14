@@ -1,5 +1,4 @@
 
-// src/Components/QualificationsSection.tsx
 import * as React from 'react';
 import { Box, Container, Paper, Typography } from '@mui/material';
 import { gradients } from '../theme';
@@ -109,8 +108,11 @@ const QualificationsSection: React.FC = () => {
             </Box>
           </Box>
         </Box>
+        
       </Container>
+      
     </Box>
+    
     </Box>
   );
 };
