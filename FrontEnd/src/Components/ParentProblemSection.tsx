@@ -2,12 +2,12 @@
 import * as React from 'react';
 import {
   Box,
-  Container,
   Paper,
   Stack,
   Typography,
 } from '@mui/material';
-import { gradients } from '../theme';
+import { gradients, layout } from '../theme';
+import SectionContainer from './SectionContainer';
 
 const ParentProblemsSection: React.FC = () => {
   const cards = [
@@ -32,8 +32,8 @@ const ParentProblemsSection: React.FC = () => {
   ];
 
   return (
-    <Box component="section" sx={{ py: { xs: 8, md: 10 } }}>
-      <Container maxWidth="lg">
+    <Box component="section" sx={{ py: layout.sectionY }}>
+      <SectionContainer>
         <Box sx={{ textAlign: 'center', mb: 4 }}>
         <Typography
           variant="h2"
@@ -103,7 +103,7 @@ const ParentProblemsSection: React.FC = () => {
             </Box>
           ))}
         </Box>
-      </Container>
+      </SectionContainer>
     </Box>
   );
 };

@@ -2,7 +2,6 @@
 import * as React from 'react';
 import {
     Box,
-    Container,
     List,
     ListItem,
     ListItemIcon,
@@ -11,7 +10,8 @@ import {
     Typography,
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
-import { gradients } from '../theme';
+import { gradients, layout } from '../theme';
+import SectionContainer from './SectionContainer';
 
 const WhyDifferentSection: React.FC = () => {
     const points = [
@@ -27,11 +27,11 @@ const WhyDifferentSection: React.FC = () => {
         <Box
             component="section"
             sx={{
-                py: { xs: 8, md: 10 },
+                py: layout.sectionY,
                 
             }}
         >
-            <Container maxWidth="lg">
+            <SectionContainer>
                 <Paper
                     elevation={4}
                     sx={{
@@ -90,7 +90,7 @@ const WhyDifferentSection: React.FC = () => {
                         </Box>
                     </Box>
                 </Paper>
-            </Container>
+            </SectionContainer>
         </Box>
     );
 };

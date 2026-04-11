@@ -112,10 +112,9 @@ const NavBar: React.FC = () => {
             sx={{
               mr: 2,
               display: { xs: 'none', lg: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: '#1A1A1A',
+              fontWeight: 600,
+              letterSpacing: '.08rem',
+              color: 'text.primary',
               textDecoration: 'none',
             }}
           >
@@ -170,9 +169,8 @@ const NavBar: React.FC = () => {
               mr: 2,
               display: { xs: 'flex', lg: 'none' },
               flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
+              fontWeight: 600,
+              letterSpacing: '.08rem',
               color: 'inherit',
               textDecoration: 'none',
             }}
@@ -200,22 +198,20 @@ const NavBar: React.FC = () => {
             key={page}
             onClick={() => handleNavigate(page)}
             sx={{
-              fontFamily: 'monospace',
-              fontSize: 22,
-              letterSpacing: '.3rem',
+              fontSize: 18,
+              letterSpacing: '.06rem',
               my: 2,
 
-              color: scrolled ? '#8C6F7F' : '#49928cff',
-              fontWeight: scrolled ? 700 : 400,
+              color: scrolled ? 'primary.dark' : 'primary.main',
+              fontWeight: scrolled ? 600 : 500,
               backgroundColor: 'transparent',
 
               transition: 'color 0.3s ease, font-weight 0.3s ease',
 
               // Add hover effect
               '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',  // glassy hover
-                // optional: keep text color stable on hover
-                color: scrolled ? '#8C6F7F' : '#49928cff',
+                backgroundColor: 'rgba(255, 255, 255, 0.35)',
+                color: scrolled ? 'primary.dark' : 'primary.main',
               },
             }}
           >

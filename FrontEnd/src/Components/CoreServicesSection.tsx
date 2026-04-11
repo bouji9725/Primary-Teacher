@@ -1,12 +1,12 @@
 import * as React from 'react';
 import {
   Box,
-  Container,
   Paper,
   Stack,
   Typography,
 } from '@mui/material';
-import { gradients } from '../theme';
+import { gradients, layout } from '../theme';
+import SectionContainer from './SectionContainer';
 
 const services = [
   {
@@ -29,8 +29,8 @@ const services = [
 
 const CoreServicesSection: React.FC = () => {
   return (
-    <Box component="section" sx={{ py: { xs: 8, md: 10 } }}>
-      <Container maxWidth="lg">
+    <Box component="section" sx={{ py: layout.sectionY }}>
+      <SectionContainer>
         <Typography
           variant="h2"
           sx={{ color: 'primary.main', fontWeight: 600 }}
@@ -72,7 +72,7 @@ const CoreServicesSection: React.FC = () => {
           
         </Box>
         
-      </Container>
+      </SectionContainer>
       
     </Box>
     

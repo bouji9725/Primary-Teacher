@@ -1,13 +1,15 @@
 'use client';
 
 import * as React from 'react';
-import { Box, Container, Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import BookingHeader from '@/src/Components/BookingComp/BookingHeader';
 import BookingPackageStep from '@/src/Components/BookingComp/BookingPackageStep';
 import BookingTimeStep from '@/src/Components/BookingComp/BookingTimeStep';
 import BookingChildInfoStep from '@/src/Components/BookingComp/BookingChildInfoStep';
 import BookingConfirmStep from '@/src/Components/BookingComp/BookingConfirmStep';
 import BookingTrustPanel from '@/src/Components/BookingComp/BookingTrustPanel';
+import SectionContainer from '@/src/Components/SectionContainer';
+import { layout } from '@/src/theme';
 
 export default function BookingPage() {
   const [selectedPackage, setSelectedPackage] = React.useState('homework');
@@ -18,24 +20,11 @@ export default function BookingPage() {
       component="main"
       sx={{
         background: 'background.default',
-        pt: { xs: 12, sm: 14 },
-        pb: { xs: 8, sm: 10, md: 12 },
+        pt: { xs: layout.heroTop.xs, sm: layout.heroTop.sm },
+        pb: layout.pageBottom,
       }}
     >
-      <Container
-        maxWidth={false}
-        sx={{
-          px: { xs: 2, sm: 3, md: 4 },
-          maxWidth: {
-            xs: '100%',
-            sm: '640px',
-            md: '860px',
-            lg: '1180px',
-            xl: '1420px',
-          },
-          mx: 'auto',
-        }}
-      >
+      <SectionContainer>
         <BookingHeader />
 
         <Box
@@ -66,7 +55,7 @@ export default function BookingPage() {
             <BookingTrustPanel />
           </Box>
         </Box>
-      </Container>
+      </SectionContainer>
     </Box>
   );
 }

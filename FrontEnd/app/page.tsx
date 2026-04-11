@@ -5,12 +5,13 @@ import { useRouter } from 'next/navigation';
 import {
   Box,
   Button,
-  Container,
   Stack,
   Typography,
 } from '@mui/material';
 import ParentProblemsSection from '@/src/Components/ParentProblemSection';
 import Services from '@/src/Components/CoreServicesSection';
+import SectionContainer from '@/src/Components/SectionContainer';
+import { layout } from '@/src/theme';
 
 export default function HomePage() {
   const router = useRouter();
@@ -24,24 +25,11 @@ export default function HomePage() {
       component="section"
       sx={{
         background: 'background.default',
-        pt: { xs: 12, sm: 14, md: 16 },
-        pb: { xs: 8, sm: 10, md: 12 },
+        pt: layout.heroTop,
+        pb: layout.pageBottom,
       }}
     >
-      <Container
-        maxWidth={false}
-        sx={{
-          px: { xs: 2, sm: 3, md: 4 },
-          maxWidth: {
-            xs: '100%',
-            sm: '640px',
-            md: '860px',
-            lg: '1180px',
-            xl: '1420px',
-          },
-          mx: 'auto',
-        }}
-      >
+      <SectionContainer>
         <Box
           sx={{
             display: 'flex',
@@ -156,7 +144,7 @@ export default function HomePage() {
         <ParentProblemsSection />
         <Services />
 
-      </Container>
+      </SectionContainer>
     </Box>
   );
 }

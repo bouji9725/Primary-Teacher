@@ -1,8 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import { Box, Container, Paper, Typography } from '@mui/material';
-import { gradients } from '@/src/theme';
+import { Box, Paper, Typography } from '@mui/material';
+import { gradients, layout } from '@/src/theme';
+import SectionContainer from '@/src/Components/SectionContainer';
 import WhyDifferentSection from '@/src/Components/WhyDifferentSection';
 
 const qualificationCards = [
@@ -34,13 +35,15 @@ export default function AboutPage() {
       <Box
         component="section"
         sx={{
-          py: { xs: 8, md: 10 },
+          pt: layout.heroTop,
+          pb: layout.pageBottom,
           background: 'background.default',
         }}
       >
         <WhyDifferentSection />
 
-        <Container sx={{ mt: 4 }} maxWidth="lg">
+        <SectionContainer>
+          <Box sx={{ mt: 4 }}>
           <Box sx={{ display: 'flex', gap: 4, alignItems: 'stretch', flexDirection: { xs: 'column', md: 'column' } }}>
             <Box sx={{ textAlign: 'center', flex: { xs: 1, md: '0 0 calc(41.666% - 8px)' } }}>
               <Typography
@@ -82,7 +85,8 @@ export default function AboutPage() {
               </Box>
             </Box>
           </Box>
-        </Container>
+          </Box>
+        </SectionContainer>
       </Box>
     </Box>
   );
