@@ -175,8 +175,16 @@ const BookingTimeStep: React.FC<BookingTimeStepProps> = ({
       return;
     }
 
-    // Use existing time slot or default to first available
-    const slot = selectedSlot ?? timeSlots[0];
+    // Use existing time slot when available, otherwise fallback to first free slot
+    const preferredSlot = selectedSlot ?? timeSlots[0];
+    const slot = isSlotReserved(day, preferredSlot)
+      ? timeSlots.find((time) => !isSlotReserved(day, time))
+      : preferredSlot;
+
+    if (!slot) {
+      return;
+    }
+
     const [hour, minute] = slot.split(':').map(Number);
     const combined = new Date(
       day.getFullYear(),
@@ -205,6 +213,10 @@ const BookingTimeStep: React.FC<BookingTimeStepProps> = ({
       baseDate = isSameMonth
         ? today
         : new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+    }
+
+    if (isSlotReserved(baseDate, slot)) {
+      return;
     }
 
     const [hour, minute] = slot.split(':').map(Number);
@@ -345,20 +357,26 @@ key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
         useFlexGap
         sx={{ mb: 1 }}
       >
-        {timeSlots.map((slot) => (
-          <Button
-            key={slot}
-            variant={selectedSlot === slot ? 'contained' : 'outlined'}
-            size="small"
-            onClick={() => handleTimeClick(slot)}
-            sx={{
-              borderRadius: 999,
-              px: 2,
-            }}
-          >
-            {slot}
-          </Button>
-        ))}
+        {timeSlots.map((slot) => {
+          const baseDateForSlot = selectedDate ?? today;
+          const isReserved = isSlotReserved(baseDateForSlot, slot);
+
+          return (
+            <Button
+              key={slot}
+              variant={selectedSlot === slot ? 'contained' : 'outlined'}
+              size="small"
+              onClick={() => handleTimeClick(slot)}
+              disabled={isReserved}
+              sx={{
+                borderRadius: 999,
+                px: 2,
+              }}
+            >
+              {slot}
+            </Button>
+          );
+        })}
       </Stack>
 
       {selectedDate && selectedSlot && (

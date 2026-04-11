@@ -15,7 +15,7 @@ import Services from '@/src/Components/CoreServicesSection';
 export default function HomePage() {
   const router = useRouter();
 
-  const handlenavigate = (path: string) => {
+  const handleNavigate = (path: string) => {
     router.push(`/${path}`);
   };
 
@@ -106,7 +106,7 @@ export default function HomePage() {
                     px: { xs: 2.4, sm: 3 },
                     fontSize: { xs: '0.9rem', sm: '1rem' },
                   }}
-                  onClick={() => handlenavigate('Booking')}
+                  onClick={() => handleNavigate('Booking')}
                 >
                   Book a free call
                 </Button>
@@ -141,7 +141,7 @@ export default function HomePage() {
           {/* RIGHT: portrait */}
           <Box
             component="img"
-            src="HeroImg.png"
+            src="/HeroImg.png"
             alt="Child in online tutoring session"
             sx={{
               width: '100%',

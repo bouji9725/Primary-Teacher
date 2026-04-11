@@ -8,7 +8,7 @@
 
   /* We stay in light mode; background matches your design */
   color: #2f2a3b;
-  background-color:  'linear-gradient(135deg, #f3ddddff 0%, #F0E4FF 40%, #F9F5EF 100%)';
+  background-color: #f3dddd;
 
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

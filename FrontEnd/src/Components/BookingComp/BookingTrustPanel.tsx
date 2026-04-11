@@ -21,7 +21,7 @@ const BookingTrustPanel: React.FC = () => {
           fontWeight: 600,
         }}
       >
-        You're in safe hands
+        You&apos;re in safe hands
       </Typography>
 
       <Typography

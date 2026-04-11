@@ -5,6 +5,29 @@ import { Box, Container, Paper, Typography } from '@mui/material';
 import { gradients } from '@/src/theme';
 import WhyDifferentSection from '@/src/Components/WhyDifferentSection';
 
+const qualificationCards = [
+  {
+    label: 'M.Ed. in Heilpädagogik',
+    title: 'Special Needs Education',
+    body: "Master's degree focused on learning difficulties, inclusion, and evidence-based support strategies.",
+  },
+  {
+    label: '10+ years experience',
+    title: 'Primary & Special Schools',
+    body: 'Many years working with ADHD, Dyslexia, Autism, IF, DaZ and children who have experienced bullying or anxiety.',
+  },
+  {
+    label: 'Parent-friendly',
+    title: 'Clear communication',
+    body: 'Short summaries after blocks of sessions so you always know what we are working on and what is changing.',
+  },
+  {
+    label: 'Child-centred',
+    title: 'Motivation & self-esteem',
+    body: 'Methods that make children feel competent and safe, not ashamed or "behind".',
+  },
+];
+
 export default function AboutPage() {
   return (
     <Box>
@@ -27,7 +50,7 @@ export default function AboutPage() {
                 Expert Qualifications You Can Trust
               </Typography>
               <Typography variant="h3" sx={{ mt: 1, mb: 2 }}>
-                Not just "good with kids", but professionally trained.
+                Not just &quot;good with kids&quot;, but professionally trained.
               </Typography>
               <Typography variant="body1" color="text.secondary">
                 You get a combination of classroom experience and specialised
@@ -38,74 +61,24 @@ export default function AboutPage() {
 
             <Box sx={{ flex: { xs: 1, md: '0 0 calc(58.333% - 8px)' } }}>
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 9 }}>
-                <Box>
-                  <Paper
-                    elevation={2}
-                    sx={{ background: gradients.bgmain, p: 3, borderRadius: 4, height: '100%' }}
-                  >
-                    <Typography variant="subtitle2" color="primary.main">
-                      M.Ed. in Heilpädagogik
-                    </Typography>
-                    <Typography variant="h6" sx={{ mt: 0.5, mb: 1 }}>
-                      Special Needs Education
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Master&apos;s degree focused on learning difficulties,
-                      inclusion, and evidence-based support strategies.
-                    </Typography>
-                  </Paper>
-                </Box>
-                <Box>
-                  <Paper
-                    elevation={2}
-                    sx={{ background: gradients.bgmain, p: 3, borderRadius: 4, height: '100%' }}
-                  >
-                    <Typography variant="subtitle2" color="primary.main">
-                      10+ years experience
-                    </Typography>
-                    <Typography variant="h6" sx={{ mt: 0.5, mb: 1 }}>
-                      Primary & Special Schools
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Many years working with ADHD, Dyslexia, Autism, IF, DaZ and
-                      children who have experienced bullying or anxiety.
-                    </Typography>
-                  </Paper>
-                </Box>
-                <Box>
-                  <Paper
-                    elevation={2}
-                    sx={{ background: gradients.bgmain, p: 3, borderRadius: 4, height: '100%' }}
-                  >
-                    <Typography variant="subtitle2" color="primary.main">
-                      Parent-friendly
-                    </Typography>
-                    <Typography variant="h6" sx={{ mt: 0.5, mb: 1 }}>
-                      Clear communication
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Short summaries after blocks of sessions so you always know
-                      what we are working on and what is changing.
-                    </Typography>
-                  </Paper>
-                </Box>
-                <Box>
-                  <Paper
-                    elevation={2}
-                    sx={{ background: gradients.bgmain, p: 3, borderRadius: 4, height: '100%' }}
-                  >
-                    <Typography variant="subtitle2" color="primary.main">
-                      Child-centred
-                    </Typography>
-                    <Typography variant="h6" sx={{ mt: 0.5, mb: 1 }}>
-                      Motivation & self-esteem
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Methods that make children feel competent and safe, not
-                      ashamed or "behind".
-                    </Typography>
-                  </Paper>
-                </Box>
+                {qualificationCards.map((card) => (
+                  <Box key={card.title}>
+                    <Paper
+                      elevation={2}
+                      sx={{ background: gradients.bgmain, p: 3, borderRadius: 4, height: '100%' }}
+                    >
+                      <Typography variant="subtitle2" color="primary.main">
+                        {card.label}
+                      </Typography>
+                      <Typography variant="h6" sx={{ mt: 0.5, mb: 1 }}>
+                        {card.title}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {card.body}
+                      </Typography>
+                    </Paper>
+                  </Box>
+                ))}
               </Box>
             </Box>
           </Box>

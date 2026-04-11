@@ -133,7 +133,7 @@ export default function PackagesPage() {
                                 </Typography>
 
                                 <Typography variant="body2" color="text.secondary">
-                                    Instead of "just doing homework together", we look at the root
+                                    Instead of &quot;just doing homework together&quot;, we look at the root
                                     causes: attention, memory, language, self-confidence and past
                                     experiences with school. That&apos;s what makes change
                                     sustainable.
@@ -177,7 +177,7 @@ export default function PackagesPage() {
                 component="section"
                 sx={{
                     py: { xs: 6, md: 8 },
-                    bgcolor: '#background.default',
+                    bgcolor: 'background.default',
                 }}
             >
                 <SectionContainer>
