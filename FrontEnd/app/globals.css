@@ -1,0 +1,44 @@
+/* app/globals.css */
+/* Base typography & rendering */
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  /* We stay in light mode; background matches your design */
+  color: #2f2a3b;
+  background-color:  'linear-gradient(135deg, #f3ddddff 0%, #F0E4FF 40%, #F9F5EF 100%)';
+
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Make the page actually fill the viewport and remove default margins  #d5d68c */
+body { 
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(
+  to bottom,
+  #f3ddddff 0%,
+  #f3ddddff 60%,
+  #f3ddddff 70%,
+  #8C6F7F 120%) /* linear-gradient(220deg,   #C39AF5 0%,   #F4E7DA 40%,  #C39AF5 100%) ;  #f9f5ef same as :root so there is no dark border */
+}
+
+/* Root React container should just stretch, no centering/padding here.
+   Layout is controlled by your components (MUI Container, Box, etc.). */
+html, body {
+  min-height: 100vh;
+}
+
+/* Basic link + button reset */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}

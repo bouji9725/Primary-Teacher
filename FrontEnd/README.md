@@ -35,41 +35,66 @@ export default defineConfig([
       // Other configs...
     ],
     languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+      # Teacher App - Next.js + TypeScript + Material-UI
+      This is a Next.js application for a teaching and tutoring service, featuring booking functionality, package information, and more.
+      ## Getting Started
+      First, install the dependencies:
+      ```bash
+      npm install
+      ```
+      Then, run the development server:
+      ```bash
+      npm run dev
+      ```
+      Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+      ## Build for Production
+      ```bash
+      npm run build
+      npm start
+      ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+      ## Tech Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+      - **Next.js 16** - React framework with App Router
+      - **TypeScript** - Type safety
+      - **Material-UI (MUI)** - Component library with Emotion styling
+      - **React 19** - Latest React features
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+      ## Project Structure
+
+      ```
+      app/                    # Next.js App Router pages
+        layout.tsx           # Root layout with theme provider
+        page.tsx             # Home page
+        about/               # About page
+        Booking/             # Booking page
+        Packages/            # Packages page
+        Services/            # Services page
+      src/
+        Components/          # Reusable React components
+        theme.ts             # Material-UI theme configuration
+      ```
+
+      ## Pages
+
+      - **Home (/)** - Landing page with hero section and service overview
+      - **/about** - Qualifications and experience information
+      - **/Packages** - Available tutoring packages
+      - **/Booking** - Book a session
+      - **/Services** - Core services offered
+
+      ## Migration from Vite
+
+      This project was migrated from Vite to Next.js. Key changes:
+      - React Router replaced with Next.js App Router
+      - Client components marked with 'use client' directive
+      - Path aliases using @/ prefix
+      - Vite config replaced with next.config.js
+      - Scripts updated in package.json
+
+      ## Learn More
+
+      To learn more about Next.js, take a look at the following resources:
+
+      - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+      - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
