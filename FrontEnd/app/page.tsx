@@ -94,7 +94,7 @@ export default function HomePage() {
                     px: { xs: 2.4, sm: 3 },
                     fontSize: { xs: '0.9rem', sm: '1rem' },
                   }}
-                  onClick={() => handleNavigate('Booking')}
+                  onClick={() => handleNavigate('booking')}
                 >
                   Book a free call
                 </Button>

@@ -25,9 +25,9 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const pageRoutes: Record<string, string> = {
   Home: '/',
-  Services: '/Services',
-  Packages: '/Packages',
-  Booking: '/Booking',
+  Services: '/services',
+  Packages: '/packages',
+  Booking: '/booking',
   About: '/about',
 };
 

@@ -1,8 +1,6 @@
-'use client';
-
-import { ThemeProvider } from '@mui/material/styles';
-import theme from '@/src/theme';
+import * as React from 'react';
 import NavBar from '@/src/Components/NavBar';
+import Providers from './providers';
 import './globals.css';
 
 export default function RootLayout({
@@ -13,10 +11,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ThemeProvider theme={theme}>
-          <NavBar />
-          {children}
-        </ThemeProvider>
+        <Providers>
+            <NavBar />
+            {children}
+        </Providers>
       </body>
     </html>
   );
