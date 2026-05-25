@@ -1,247 +1,194 @@
-// src/Components/BookingComp/BookingTimeStep.tsx
-'use client';
+'use client'
 
-import * as React from 'react';
+import * as React from 'react'
 import {
   Box,
   Button,
+  CircularProgress,
   IconButton,
   Paper,
   Stack,
+  Tooltip,
   Typography,
-} from '@mui/material';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { gradients } from '../../theme';
+} from '@mui/material'
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
+import { gradients } from '../../theme'
 
-/**
- * Interface for reserved time slots (booked lessons)
- * Used to block unavailable times on the calendar
- */
 interface ReservedSlot {
-  date: string; // ISO date string, e.g., "2025-12-07"
-  time: string; // Time slot, e.g., "10:00"
+  date: string // "YYYY-MM-DD"
+  time: string // "HH:MM"
+}
+
+interface Availability {
+  blockedDays: string[]
+  reservedSlots: ReservedSlot[]
 }
 
 interface BookingTimeStepProps {
-  /**
-   * ISO datetime string, e.g. "2025-12-07T15:00"
-   * or null if nothing is selected yet.
-   */
-  selectedTime: string | null;
-  onChange: (dateTimeIso: string) => void;
-  /** Optional: array of reserved slots to block from booking */
-  reservedSlots?: ReservedSlot[];
+  selectedTime: string | null
+  onChange: (dateTimeIso: string) => void
 }
 
-// Available time slots for booking (Monday–Friday only)
-const timeSlots = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:30', '17:30'];
+const TIME_SLOTS = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:30', '17:30']
+const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
 
-// Weekday labels (Monday to Friday, excluding weekends)
-const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+export function BookingTimeStep({ selectedTime, onChange }: BookingTimeStepProps) {
+  const today = React.useMemo(() => new Date(), [])
 
-const BookingTimeStep: React.FC<BookingTimeStepProps> = ({
-  selectedTime,
-  onChange,
-  reservedSlots = [],
-}) => {
-  // Initialize calendar to show current month
-  const today = React.useMemo(() => new Date(), []);
-  const [currentMonth, setCurrentMonth] = React.useState(() => {
-    return new Date(today.getFullYear(), today.getMonth(), 1);
-  });
+  const [currentMonth, setCurrentMonth] = React.useState(
+    () => new Date(today.getFullYear(), today.getMonth(), 1)
+  )
+  const [availability, setAvailability] = React.useState<Availability>({
+    blockedDays: [],
+    reservedSlots: [],
+  })
+  const [loading, setLoading] = React.useState(false)
 
-  // Extract selected date from ISO string
+  // Fetch availability whenever the displayed month changes
+  React.useEffect(() => {
+    const year = currentMonth.getFullYear()
+    const month = currentMonth.getMonth() + 1
+    setLoading(true)
+    fetch(`/api/availability?year=${year}&month=${month}`)
+      .then((r) => r.json())
+      .then((data: Availability) => setAvailability(data))
+      .catch(() => {}) // silently fail — don't block the calendar
+      .finally(() => setLoading(false))
+  }, [currentMonth])
+
   const selectedDate = React.useMemo(() => {
-    if (!selectedTime) return null;
-    const d = new Date(selectedTime);
-    return isNaN(d.getTime()) ? null : d;
-  }, [selectedTime]);
+    if (!selectedTime) return null
+    const d = new Date(selectedTime)
+    return isNaN(d.getTime()) ? null : d
+  }, [selectedTime])
 
-  // Extract selected time slot from ISO string
   const selectedSlot = React.useMemo(() => {
-    if (!selectedTime) return null;
-    const d = new Date(selectedTime);
-    if (isNaN(d.getTime())) return null;
-    const h = d.getHours().toString().padStart(2, '0');
-    const m = d.getMinutes().toString().padStart(2, '0');
-    return `${h}:${m}`;
-  }, [selectedTime]);
+    if (!selectedTime) return null
+    const d = new Date(selectedTime)
+    if (isNaN(d.getTime())) return null
+    return `${d.getUTCHours().toString().padStart(2, '0')}:${d.getUTCMinutes().toString().padStart(2, '0')}`
+  }, [selectedTime])
 
-  /**
-   * Navigate to previous or next month in calendar
-   * @param direction - 'prev' for previous month, 'next' for next month
-   */
+  const isCurrentMonth =
+    currentMonth.getFullYear() === today.getFullYear() &&
+    currentMonth.getMonth() === today.getMonth()
+
   const handleMonthChange = (direction: 'prev' | 'next') => {
     setCurrentMonth((prev) => {
-      const year = prev.getFullYear();
-      const month = prev.getMonth();
-      return new Date(
-        direction === 'prev' ? year : year,
-        direction === 'prev' ? month - 1 : month + 1,
+      const next = new Date(
+        prev.getFullYear(),
+        prev.getMonth() + (direction === 'next' ? 1 : -1),
         1
-      );
-    });
-  };
+      )
+      // Never navigate before the current month
+      const isBeforeNow =
+        next.getFullYear() < today.getFullYear() ||
+        (next.getFullYear() === today.getFullYear() &&
+          next.getMonth() < today.getMonth())
+      return isBeforeNow ? prev : next
+    })
+  }
 
-  /**
-   * Check if two dates are the same day (ignoring time)
-   * @param d1 - First date
-   * @param d2 - Second date
-   * @returns true if both dates represent the same calendar day
-   */
   const isSameDay = (d1: Date, d2: Date) =>
     d1.getFullYear() === d2.getFullYear() &&
     d1.getMonth() === d2.getMonth() &&
-    d1.getDate() === d2.getDate();
+    d1.getDate() === d2.getDate()
 
-  /**
-   * Check if a date is a weekend (Saturday or Sunday)
-   * Returns true if day is 0 (Sunday) or 6 (Saturday)
-   * @param date - Date to check
-   * @returns true if date is a weekend day
-   */
-  const isWeekend = (date: Date): boolean => {
-    const dayOfWeek = date.getDay();
-    return dayOfWeek === 0 || dayOfWeek === 6;
-  };
+  const isWeekend = (date: Date) => {
+    const d = date.getDay()
+    return d === 0 || d === 6
+  }
 
-  /**
-   * Check if a time slot is reserved (already booked)
-   * @param date - Date to check
-   * @param time - Time slot to check (e.g., "10:00")
-   * @returns true if the slot is reserved and should be blocked
-   */
-  const isSlotReserved = (date: Date, time: string): boolean => {
-    const dateStr = date.toISOString().split('T')[0]; // "YYYY-MM-DD"
-    return reservedSlots.some(
-      (slot) => slot.date === dateStr && slot.time === time
-    );
-  };
+  const isBlockedDay = (date: Date) => {
+    const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    return availability.blockedDays.includes(dateStr)
+  }
 
-  /**
-   * Build array of calendar days for display
-   * Fills in empty slots for proper grid alignment
-   * Only includes weekdays (Mon–Fri), skips weekends entirely
-   * @param month - Month to build calendar for
-   * @returns Array of Date objects (with nulls for empty grid cells before first weekday)
-   */
-  const buildCalendarDays = (month: Date) => {
-    const year = month.getFullYear();
-    const monthIndex = month.getMonth();
-    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+  const isSlotReserved = (date: Date, time: string) => {
+    const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    return availability.reservedSlots.some((s) => s.date === dateStr && s.time === time)
+  }
 
-    const days: (Date | null)[] = [];
+  const buildCalendarDays = (month: Date): (Date | null)[] => {
+    const year = month.getFullYear()
+    const monthIndex = month.getMonth()
+    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate()
+    const days: (Date | null)[] = []
 
-    // Find the first weekday (Mon-Fri) of the month and its column position
-    let firstWeekdayColumn = 0;
+    let firstWeekdayColumn = 0
     for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(year, monthIndex, day);
+      const date = new Date(year, monthIndex, day)
       if (!isWeekend(date)) {
-        // Calculate column: Mon=0, Tue=1, Wed=2, Thu=3, Fri=4
-        const dayOfWeek = date.getDay(); // 0=Sun, 1=Mon, 2=Tue, ..., 6=Sat
-        firstWeekdayColumn = dayOfWeek - 1; // Mon(1)->0, Tue(2)->1, etc.
-        break;
+        firstWeekdayColumn = date.getDay() - 1 // Mon(1)→0 … Fri(5)→4
+        break
       }
     }
 
-    // Add empty cells for alignment before the first weekday
-    for (let i = 0; i < firstWeekdayColumn; i++) {
-      days.push(null);
-    }
+    for (let i = 0; i < firstWeekdayColumn; i++) days.push(null)
 
-    // Add only weekdays (Mon-Fri) to the calendar
     for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(year, monthIndex, day);
-      if (!isWeekend(date)) {
-        days.push(date);
-      }
+      const date = new Date(year, monthIndex, day)
+      if (!isWeekend(date)) days.push(date)
     }
 
-    return days;
-  };
+    return days
+  }
 
-  const calendarDays = buildCalendarDays(currentMonth);
+  const calendarDays = buildCalendarDays(currentMonth)
 
-  /**
-   * Handle day click: select date and use first available time slot
-   * Only allows selection of today or future dates (no past dates)
-   * @param day - Selected day
-   */
+  const isPastDay = (day: Date) =>
+    day < new Date(today.getFullYear(), today.getMonth(), today.getDate())
+
   const handleDayClick = (day: Date) => {
-    // Block past dates
-    if (day < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
-      return;
-    }
+    if (isPastDay(day) || isBlockedDay(day)) return
 
-    // Use existing time slot when available, otherwise fallback to first free slot
-    const preferredSlot = selectedSlot ?? timeSlots[0];
-    const slot = isSlotReserved(day, preferredSlot)
-      ? timeSlots.find((time) => !isSlotReserved(day, time))
-      : preferredSlot;
+    const preferred = selectedSlot ?? TIME_SLOTS[0]
+    const slot = isSlotReserved(day, preferred)
+      ? TIME_SLOTS.find((t) => !isSlotReserved(day, t))
+      : preferred
 
-    if (!slot) {
-      return;
-    }
+    if (!slot) return // all slots taken on this day
 
-    const [hour, minute] = slot.split(':').map(Number);
-    const combined = new Date(
-      day.getFullYear(),
-      day.getMonth(),
-      day.getDate(),
-      hour,
-      minute
-    );
-    onChange(combined.toISOString());
-  };
+    const [h, m] = slot.split(':').map(Number)
+    onChange(new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate(), h, m)).toISOString())
+  }
 
-  /**
-   * Handle time slot click: select time for current or default date
-   * If no date is selected, uses today (if in same month) or first day of month
-   * @param slot - Selected time slot (e.g., "10:00")
-   */
   const handleTimeClick = (slot: string) => {
-    let baseDate: Date;
-
+    let base: Date
     if (selectedDate) {
-      baseDate = selectedDate;
+      base = selectedDate
     } else {
-      const isSameMonth =
+      const isSameMonthAsToday =
         today.getFullYear() === currentMonth.getFullYear() &&
-        today.getMonth() === currentMonth.getMonth();
-      baseDate = isSameMonth
+        today.getMonth() === currentMonth.getMonth()
+      base = isSameMonthAsToday
         ? today
-        : new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+        : new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1)
     }
 
-    if (isSlotReserved(baseDate, slot)) {
-      return;
-    }
+    if (isSlotReserved(base, slot)) return
 
-    const [hour, minute] = slot.split(':').map(Number);
-    const combined = new Date(
-      baseDate.getFullYear(),
-      baseDate.getMonth(),
-      baseDate.getDate(),
-      hour,
-      minute
-    );
-    onChange(combined.toISOString());
-  };
+    const [h, m] = slot.split(':').map(Number)
+    onChange(new Date(Date.UTC(base.getFullYear(), base.getMonth(), base.getDate(), h, m)).toISOString())
+  }
 
-  const monthFormatter = new Intl.DateTimeFormat('en', {
+  const monthLabel = new Intl.DateTimeFormat('en', {
     month: 'long',
     year: 'numeric',
-  });
+  }).format(currentMonth)
 
   return (
-    <Paper elevation={3} sx={{ background: gradients.bgmain, p: { xs: 3, md: 4 }, borderRadius: 4 }}>
+    <Paper
+      elevation={3}
+      sx={{ background: gradients.bgmain, p: { xs: 3, md: 4 }, borderRadius: 4 }}
+    >
       <Typography variant="h6" sx={{ mb: 2 }}>
-        2. Choose a date & time
+        2. Choose a date &amp; time
       </Typography>
 
-     
+      {/* Month navigation */}
       <Box
         sx={{
           display: 'flex',
@@ -252,15 +199,14 @@ const BookingTimeStep: React.FC<BookingTimeStepProps> = ({
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <CalendarMonthIcon color="primary" />
-          <Typography variant="subtitle1">
-            {monthFormatter.format(currentMonth)}
-          </Typography>
+          <Typography variant="subtitle1">{monthLabel}</Typography>
+          {loading && <CircularProgress size={14} sx={{ ml: 1 }} />}
         </Box>
-
         <Box>
           <IconButton
             size="small"
             onClick={() => handleMonthChange('prev')}
+            disabled={isCurrentMonth}
             aria-label="Previous month"
           >
             <ArrowBackIosNewIcon fontSize="small" />
@@ -275,65 +221,81 @@ const BookingTimeStep: React.FC<BookingTimeStepProps> = ({
         </Box>
       </Box>
 
-      {/* Calendar grid: 5 columns for Mon–Fri */}
+      {/* Day-of-week headers */}
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(5, 1fr)',
+          gap: 1,
+          mb: 1,
+          fontSize: '0.8rem',
+        }}
+      >
+        {WEEKDAYS.map((d) => (
+          <Box
+            key={d}
+            sx={{ textAlign: 'center', fontWeight: 600, color: 'text.secondary' }}
+          >
+            {d}
+          </Box>
+        ))}
+      </Box>
+
+      {/* Calendar grid */}
       <Box
         sx={{
           display: 'grid',
           gridTemplateColumns: 'repeat(5, 1fr)',
           gap: 1,
           mb: 3,
-          fontSize: '0.8rem',
         }}
       >
-        {weekdays.map((day) => (
-          <Box
-            key={day}
-            sx={{
-              textAlign: 'center',
-              fontWeight: 600,
-              color: 'text.secondary',
-            }}
-          >
-            {day}
-          </Box>
-        ))}
-
-        {calendarDays.map((day, index) => {
+        {calendarDays.map((day, i) => {
           if (!day) {
-            return <Box key={`empty-${index}`} 
-              sx={{ padding: '6px 0', borderRadius: 2 }}/>;
+            return <Box key={`empty-${i}`} sx={{ padding: '6px 0', borderRadius: 2 }} />
           }
 
-          const isPast =
-            day <
-            new Date(today.getFullYear(), today.getMonth(), today.getDate());
-          const isSelected = selectedDate && isSameDay(day, selectedDate);
+          const past = isPastDay(day)
+          const blocked = isBlockedDay(day)
+          const selected = !!(selectedDate && isSameDay(day, selectedDate))
+          const disabled = past || blocked
 
-          return (
+          const dayBtn = (
             <Box
-key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
+              key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
               component="button"
-              onClick={() => !isPast && handleDayClick(day)}
-              disabled={isPast}
+              onClick={() => !disabled && handleDayClick(day)}
+              disabled={disabled}
+              aria-pressed={selected}
               sx={{
                 border: 'none',
-                outline: 'none',
-                cursor: isPast ? 'default' : 'pointer',
+                cursor: disabled ? 'default' : 'pointer',
                 borderRadius: 2,
                 padding: '6px 0',
                 textAlign: 'center',
-                backgroundColor: isSelected
+                backgroundColor: selected
                   ? 'primary.main'
+                  : blocked
+                  ? 'action.disabledBackground'
                   : 'transparent',
-                color: isSelected
+                color: selected
                   ? 'common.white'
-                  : isPast
+                  : disabled
                   ? 'text.disabled'
                   : 'text.primary',
+                textDecoration: blocked ? 'line-through' : 'none',
+                outline: 'none',
+                '&:focus-visible': {
+                  outline: '2px solid',
+                  outlineColor: 'primary.main',
+                  outlineOffset: '2px',
+                },
                 '&:hover': {
-                  backgroundColor: isPast
-                    ? 'transparent'
-                    : isSelected
+                  backgroundColor: disabled
+                    ? blocked
+                      ? 'action.disabledBackground'
+                      : 'transparent'
+                    : selected
                     ? 'primary.dark'
                     : 'action.hover',
                 },
@@ -342,7 +304,15 @@ key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
             >
               {day.getDate()}
             </Box>
-          );
+          )
+
+          return blocked ? (
+            <Tooltip key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`} title="Unavailable" arrow>
+              <span>{dayBtn}</span>
+            </Tooltip>
+          ) : (
+            dayBtn
+          )
         })}
       </Box>
 
@@ -350,32 +320,22 @@ key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
         Available times
       </Typography>
-      <Stack
-        spacing={1}
-        direction="row"
-        flexWrap="wrap"
-        useFlexGap
-        sx={{ mb: 1 }}
-      >
-        {timeSlots.map((slot) => {
-          const baseDateForSlot = selectedDate ?? today;
-          const isReserved = isSlotReserved(baseDateForSlot, slot);
-
+      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ mb: 1 }}>
+        {TIME_SLOTS.map((slot) => {
+          const base = selectedDate ?? today
+          const reserved = isSlotReserved(base, slot)
           return (
             <Button
               key={slot}
               variant={selectedSlot === slot ? 'contained' : 'outlined'}
               size="small"
               onClick={() => handleTimeClick(slot)}
-              disabled={isReserved}
-              sx={{
-                borderRadius: 999,
-                px: 2,
-              }}
+              disabled={reserved}
+              sx={{ borderRadius: 999, px: 2 }}
             >
               {slot}
             </Button>
-          );
+          )
         })}
       </Stack>
 
@@ -392,7 +352,7 @@ key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
         </Typography>
       )}
     </Paper>
-  );
-};
+  )
+}
 
-export default BookingTimeStep;
+export default BookingTimeStep
