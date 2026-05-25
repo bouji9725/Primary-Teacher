@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Appointment {
+  id         String            @id @default(cuid())
+  parentName String
+  email      String
+  childName  String
+  childAge   String
+  needs      String?
+  package    String
+  dateTime   DateTime
+  status     AppointmentStatus @default(PENDING)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+model BlockedSlot {
+  id        String    @id @default(cuid())
+  type      BlockType
+  date      String?   // "YYYY-MM-DD" — used for SLOT and DAY types
+  time      String?   // "HH:MM"      — used for SLOT type only
+  startDate DateTime? // used for RANGE type
+  endDate   DateTime? // used for RANGE type
+  reason    String?
+  createdAt DateTime  @default(now())
+}
+
+enum BlockType {
+  SLOT  // One specific time slot on one day
+  DAY   // Entire day blocked
+  RANGE // Consecutive days (vacation)
+}
