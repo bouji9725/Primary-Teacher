@@ -270,7 +270,7 @@ export default function PackagesPage() {
                             <Button
                                 variant="contained"
                                 size="large"
-                                href="/Booking"
+                                href="/booking"
                                 sx={{
                                     py: { xs: 1.2, sm: 1.4 },
                                     px: { xs: 2.6, sm: 3.2 },
@@ -283,7 +283,7 @@ export default function PackagesPage() {
                                 variant="outlined"
                                 size="large"
                                 color="secondary"
-                                href="/Booking"
+                                href="/booking"
                                 sx={{
                                     py: { xs: 1.2, sm: 1.4 },
                                     px: { xs: 2.4, sm: 3 },

@@ -116,8 +116,14 @@ export function BookingWizard() {
       {/* Progress stepper */}
       <Stepper
         activeStep={step}
-        sx={{ mb: { xs: 4, md: 5 }, overflowX: 'auto' }}
         alternativeLabel
+        sx={{
+          mb: { xs: 4, md: 5 },
+          overflowX: 'auto',
+          '& .MuiStepLabel-label': {
+            fontSize: { xs: '0.65rem', sm: '0.75rem', md: '0.875rem' },
+          },
+        }}
       >
         {STEPS.map((label) => (
           <Step key={label}>

@@ -58,8 +58,11 @@ const BookingPackageStep: React.FC<BookingPackageStepProps> = ({
             <AccessTimeIcon color="primary" />
             <Box>
               <Typography variant="subtitle1">Homework Rescue</Typography>
-              <Typography variant="caption" color="text.secondary">
-                1× per week · support for calm evenings
+              <Typography variant="caption" color="text.secondary" display="block">
+                1× per week · 50 min
+              </Typography>
+              <Typography variant="caption" color="primary">
+                €XX / session
               </Typography>
             </Box>
           </Stack>
@@ -76,8 +79,11 @@ const BookingPackageStep: React.FC<BookingPackageStepProps> = ({
             <SchoolIcon color="primary" />
             <Box>
               <Typography variant="subtitle1">Foundation Booster</Typography>
-              <Typography variant="caption" color="text.secondary">
-                Close gaps in reading, writing or math
+              <Typography variant="caption" color="text.secondary" display="block">
+                2× per week · 50 min
+              </Typography>
+              <Typography variant="caption" color="primary">
+                €XX / session
               </Typography>
             </Box>
           </Stack>
@@ -94,8 +100,11 @@ const BookingPackageStep: React.FC<BookingPackageStepProps> = ({
             <PsychologyIcon color="primary" />
             <Box>
               <Typography variant="subtitle1">Special Needs Support</Typography>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" color="text.secondary" display="block">
                 ADHD · Dyslexia · Autism-friendly structure
+              </Typography>
+              <Typography variant="caption" color="primary">
+                €XX / session
               </Typography>
             </Box>
           </Stack>

@@ -318,7 +318,7 @@ export function BookingTimeStep({ selectedTime, onChange }: BookingTimeStepProps
 
       {/* Time slots */}
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
-        Available times
+        Available times <Typography component="span" variant="caption" color="text.secondary">(CET)</Typography>
       </Typography>
       <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ mb: 1 }}>
         {TIME_SLOTS.map((slot) => {
@@ -348,7 +348,7 @@ export function BookingTimeStep({ selectedTime, onChange }: BookingTimeStepProps
             month: 'short',
             year: 'numeric',
           })}{' '}
-          at {selectedSlot}
+          at {selectedSlot} CET
         </Typography>
       )}
     </Paper>
