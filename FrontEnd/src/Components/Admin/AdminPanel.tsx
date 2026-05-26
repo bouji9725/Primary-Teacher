@@ -4,6 +4,11 @@ import * as React from 'react'
 import {
   Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   Paper,
   Tab,
@@ -19,6 +24,7 @@ import { gradients } from '@/src/theme'
 export function AdminPanel() {
   const [tab, setTab] = React.useState(0)
   const [blockedRefreshKey, setBlockedRefreshKey] = React.useState(0)
+  const [signOutOpen, setSignOutOpen] = React.useState(false)
 
   const handleSignOut = async () => {
     await fetch('/api/admin/logout', { method: 'POST' })
@@ -50,7 +56,7 @@ export function AdminPanel() {
           <Button
             variant="outlined"
             startIcon={<LogoutIcon />}
-            onClick={handleSignOut}
+            onClick={() => setSignOutOpen(true)}
             size="small"
           >
             Sign out
@@ -110,6 +116,21 @@ export function AdminPanel() {
           </Box>
         </Paper>
       </Box>
+
+      <Dialog open={signOutOpen} onClose={() => setSignOutOpen(false)}>
+        <DialogTitle>Sign out?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            You will need to enter your password to access the admin panel again.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setSignOutOpen(false)}>Cancel</Button>
+          <Button variant="contained" color="error" onClick={handleSignOut}>
+            Sign out
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }
