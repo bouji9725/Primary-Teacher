@@ -3,9 +3,18 @@ import { db } from '@/src/lib/db'
 import { BookingSchema } from '@/src/lib/schemas/booking'
 import { sendBookingConfirmation, sendTeacherNotification } from '@/src/lib/email'
 import { AppError } from '@/src/lib/errors'
+import { getClientIp, isRateLimited } from '@/src/lib/rate-limit'
 
 export async function POST(req: Request) {
   try {
+    const ip = getClientIp(req)
+    if (await isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: { code: 'RATE_LIMITED', message: 'Too many requests. Please wait a few minutes and try again.' } },
+        { status: 429 }
+      )
+    }
+
     const raw = await req.json().catch(() => null)
     const parsed = BookingSchema.safeParse(raw)
 
