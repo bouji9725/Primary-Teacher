@@ -7,6 +7,7 @@ import {
   CircularProgress,
   IconButton,
   Paper,
+  Skeleton,
   Stack,
   Tooltip,
   Typography,
@@ -200,7 +201,6 @@ export function BookingTimeStep({ selectedTime, onChange }: BookingTimeStepProps
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <CalendarMonthIcon color="primary" />
           <Typography variant="subtitle1">{monthLabel}</Typography>
-          {loading && <CircularProgress size={14} sx={{ ml: 1 }} />}
         </Box>
         <Box>
           <IconButton
@@ -242,14 +242,33 @@ export function BookingTimeStep({ selectedTime, onChange }: BookingTimeStepProps
       </Box>
 
       {/* Calendar grid */}
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(5, 1fr)',
-          gap: 1,
-          mb: 3,
-        }}
-      >
+      <Box sx={{ position: 'relative', mb: 3 }}>
+        {loading && (
+          <Box
+            sx={{
+              position: 'absolute',
+              inset: 0,
+              zIndex: 1,
+              borderRadius: 2,
+              display: 'grid',
+              gridTemplateColumns: 'repeat(5, 1fr)',
+              gap: 1,
+            }}
+          >
+            {Array.from({ length: 25 }).map((_, i) => (
+              <Skeleton key={i} variant="rounded" height={32} sx={{ borderRadius: 2 }} />
+            ))}
+          </Box>
+        )}
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(5, 1fr)',
+            gap: 1,
+            opacity: loading ? 0 : 1,
+            transition: 'opacity 0.15s ease',
+          }}
+        >
         {calendarDays.map((day, i) => {
           if (!day) {
             return <Box key={`empty-${i}`} sx={{ padding: '6px 0', borderRadius: 2 }} />
@@ -314,6 +333,7 @@ export function BookingTimeStep({ selectedTime, onChange }: BookingTimeStepProps
             dayBtn
           )
         })}
+        </Box>
       </Box>
 
       {/* Time slots */}
