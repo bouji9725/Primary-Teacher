@@ -79,16 +79,19 @@ export async function POST(req: Request) {
 
     // Send emails — awaited so serverless function doesn't freeze before delivery
     // Errors are caught so a failed email never rolls back a successful booking
+    let _emailDebug: { ok: boolean; error?: string } = { ok: false }
     try {
       await Promise.all([
         sendBookingConfirmation({ ...appointment, dateTime: appointment.dateTime }),
         sendTeacherNotification({ ...appointment, dateTime: appointment.dateTime }),
       ])
+      _emailDebug = { ok: true }
     } catch (err) {
+      _emailDebug = { ok: false, error: err instanceof Error ? err.message : String(err) }
       console.error('[bookings] email send failed', err)
     }
 
-    return NextResponse.json({ appointment: { id: appointment.id } }, { status: 201 })
+    return NextResponse.json({ appointment: { id: appointment.id }, _emailDebug }, { status: 201 })
   } catch (error) {
     console.error('[POST /api/bookings]', error)
     if (error instanceof AppError) {
