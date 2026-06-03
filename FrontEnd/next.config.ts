@@ -12,6 +12,10 @@ const securityHeaders = [
 ]
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  compiler: {
+    emotion: true,
+  },
   async headers() {
     return [
       {
