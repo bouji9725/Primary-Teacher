@@ -77,11 +77,16 @@ export async function POST(req: Request) {
       },
     })
 
-    // Send emails fire-and-forget — booking succeeds even if email fails
-    Promise.all([
-      sendBookingConfirmation({ ...appointment, dateTime: appointment.dateTime }),
-      sendTeacherNotification({ ...appointment, dateTime: appointment.dateTime }),
-    ]).catch((err) => console.error('[bookings] email send failed', err))
+    // Send emails — awaited so serverless function doesn't freeze before delivery
+    // Errors are caught so a failed email never rolls back a successful booking
+    try {
+      await Promise.all([
+        sendBookingConfirmation({ ...appointment, dateTime: appointment.dateTime }),
+        sendTeacherNotification({ ...appointment, dateTime: appointment.dateTime }),
+      ])
+    } catch (err) {
+      console.error('[bookings] email send failed', err)
+    }
 
     return NextResponse.json({ appointment: { id: appointment.id } }, { status: 201 })
   } catch (error) {
