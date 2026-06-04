@@ -6,6 +6,14 @@ A full-stack service website for a special-needs tutoring practice. Parents brow
 
 ---
 
+## Screenshots
+
+| Homepage | Booking Wizard | Admin Panel |
+|---|---|---|
+| ![Homepage](public/screenshots/homepage.webp) | ![Booking Wizard](public/screenshots/booking.webp) | ![Admin Panel](public/screenshots/admin-panel.webp) |
+
+---
+
 ## Features
 
 - **4-step booking wizard** — package selection, calendar, time slot, contact details
