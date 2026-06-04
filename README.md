@@ -137,6 +137,18 @@ Once logged in you can:
 
 ---
 
+## Running Tests
+
+```bash
+pnpm test
+```
+
+The test suite covers:
+- `BookingSchema` Zod validation — valid payloads, missing fields, invalid email, bad enum values
+- `POST /api/bookings` — 201 on success, 400 on invalid input, 400 on malformed JSON, 409 on double-booking, 409 on teacher-blocked day, 429 on rate limit exceeded
+
+---
+
 ## Project Structure
 
 ```
