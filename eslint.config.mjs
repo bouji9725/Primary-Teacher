@@ -1,6 +1,18 @@
 import nextVitals from 'eslint-config-next/core-web-vitals';
 import nextTypeScript from 'eslint-config-next/typescript';
 
-const config = [...nextVitals, ...nextTypeScript];
+const config = [
+  {
+    ignores: [
+      '.next/**',
+      'node_modules/**',
+      'coverage/**',
+      'next-env.d.ts',
+      'prisma/migrations/**',
+    ],
+  },
+  ...nextVitals,
+  ...nextTypeScript,
+];
 
 export default config;
