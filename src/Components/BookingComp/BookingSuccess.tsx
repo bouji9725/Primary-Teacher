@@ -11,12 +11,6 @@ interface Props {
   dateTime: string
 }
 
-const packageLabels: Record<string, string> = {
-  homework: 'Homework Rescue',
-  foundations: 'Foundation Booster',
-  special: 'Special Needs Support',
-}
-
 export function BookingSuccess({ parentName, email, dateTime }: Props) {
   const formatted = React.useMemo(() => {
     const d = new Date(dateTime)

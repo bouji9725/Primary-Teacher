@@ -52,18 +52,27 @@ export function BlockedSlotsList({ refreshKey }: Props) {
   const [loading, setLoading] = React.useState(true)
   const [deleting, setDeleting] = React.useState<string | null>(null)
 
-  const load = React.useCallback(() => {
-    setLoading(true)
-    fetch('/api/admin/blocked-slots')
-      .then((r) => r.json())
-      .then((data) => setSlots(data.slots ?? []))
-      .catch(() => {})
-      .finally(() => setLoading(false))
-  }, [])
-
   React.useEffect(() => {
-    load()
-  }, [load, refreshKey])
+    const controller = new AbortController()
+
+    async function loadSlots() {
+      setLoading(true)
+      try {
+        const res = await fetch('/api/admin/blocked-slots', {
+          signal: controller.signal,
+        })
+        const data = await res.json()
+        setSlots(data.slots ?? [])
+      } catch {
+        // ignore — a later refresh will retry
+      } finally {
+        if (!controller.signal.aborted) setLoading(false)
+      }
+    }
+
+    void loadSlots()
+    return () => controller.abort()
+  }, [refreshKey])
 
   const handleDelete = async (id: string) => {
     setDeleting(id)

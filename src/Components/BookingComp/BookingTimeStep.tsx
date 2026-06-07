@@ -4,7 +4,6 @@ import * as React from 'react'
 import {
   Box,
   Button,
-  CircularProgress,
   IconButton,
   Paper,
   Skeleton,
@@ -51,12 +50,26 @@ export function BookingTimeStep({ selectedTime, onChange }: BookingTimeStepProps
   React.useEffect(() => {
     const year = currentMonth.getFullYear()
     const month = currentMonth.getMonth() + 1
-    setLoading(true)
-    fetch(`/api/availability?year=${year}&month=${month}`)
-      .then((r) => r.json())
-      .then((data: Availability) => setAvailability(data))
-      .catch(() => {}) // silently fail — don't block the calendar
-      .finally(() => setLoading(false))
+    const controller = new AbortController()
+
+    async function loadAvailability() {
+      setLoading(true)
+      try {
+        const res = await fetch(
+          `/api/availability?year=${year}&month=${month}`,
+          { signal: controller.signal }
+        )
+        const data: Availability = await res.json()
+        setAvailability(data)
+      } catch {
+        // ignore — the calendar stays usable without availability data
+      } finally {
+        if (!controller.signal.aborted) setLoading(false)
+      }
+    }
+
+    void loadAvailability()
+    return () => controller.abort()
   }, [currentMonth])
 
   const selectedDate = React.useMemo(() => {
